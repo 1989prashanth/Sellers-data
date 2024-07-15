@@ -10,8 +10,8 @@ def fetch_data_from_google_sheet(sheet_url):
     # Define the scope
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-    # Specify the correct path to the JSON key file
-    file_path = r'C:\Users\user\Downloads\bank-425212-8f01cc3efacc.json'  # Adjust the path accordingly
+    # Specify the path to the JSON key file using an environment variable
+    file_path = 'credentials.json'  # This path should match where you saved the credentials in the workflow
     if not os.path.isfile(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
