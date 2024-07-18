@@ -4,23 +4,22 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import os
 import time
+import base64
+import json
 
 # Function to fetch data from Google Sheets
 def fetch_data_from_google_sheet(sheet_url):
     # Define the scope
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-    # Get the JSON key from the environment variable
-    json_key = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
-    if not json_key:
-        raise ValueError("Google application credentials not found in environment variable")
-
-    # Save the JSON key to a temporary file
-    with open('credentials.json', 'w') as f:
-        f.write(json_key)
+    # Fetch the base64 encoded credentials from the environment variable
+    credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    
+    if not credentials_path or not os.path.exists(credentials_path):
+        raise FileNotFoundError(f"File not found: {credentials_path}")
 
     # Add your credentials here
-    creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name(credentials_path, scope)
 
     # Authorize the client
     client = gspread.authorize(creds)
