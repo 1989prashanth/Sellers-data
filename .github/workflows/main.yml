@@ -23,13 +23,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set GOOGLE_APPLICATION_CREDENTIALS
-        run: echo "$GOOGLE_APPLICATION_CREDENTIALS_JSON" > credentials.json
+      - name: Create credentials file
+        run: echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 --decode > $GITHUB_WORKSPACE/credentials.json
+
+      - name: Check environment variable
+        run: echo $GITHUB_WORKSPACE/credentials.json
         env:
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          GOOGLE_APPLICATION_CREDENTIALS: $GITHUB_WORKSPACE/credentials.json
 
       - name: Run Streamlit
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/credentials.json
+          GOOGLE_APPLICATION_CREDENTIALS: $GITHUB_WORKSPACE/credentials.json
         run: |
           streamlit run Streamlit-sellersdata.py
