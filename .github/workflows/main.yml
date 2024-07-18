@@ -24,11 +24,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Decode and Save Google Credentials
-        run: |
-          echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} | base64 --decode > $GITHUB_WORKSPACE/credentials.json
+        run: echo ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} | base64 --decode > $GITHUB_WORKSPACE/credentials.json
+
+      - name: Set GOOGLE_APPLICATION_CREDENTIALS
+        run: echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/credentials.json" >> $GITHUB_ENV
 
       - name: Run Streamlit
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: $GITHUB_WORKSPACE/credentials.json
         run: |
           streamlit run Streamlit-sellersdata.py
