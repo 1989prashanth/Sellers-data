@@ -11,7 +11,7 @@ def fetch_data_from_google_sheet(sheet_url):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
     # Get the JSON key from the environment variable
-    json_key = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+    json_key = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
     if not json_key:
         raise ValueError("Google application credentials not found in environment variable")
 
