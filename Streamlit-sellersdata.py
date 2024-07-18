@@ -4,7 +4,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import os
 import time
-import json
 
 # Function to fetch data from Google Sheets
 def fetch_data_from_google_sheet(sheet_url):
@@ -12,9 +11,8 @@ def fetch_data_from_google_sheet(sheet_url):
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
     # Fetch the credentials path from the environment variable
-    credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-    
-    if not credentials_path or not os.path.exists(credentials_path):
+    credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    if not credentials_path or not os.path.isfile(credentials_path):
         raise FileNotFoundError(f"File not found: {credentials_path}")
 
     # Add your credentials here
