@@ -4,30 +4,23 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import os
 import time
-import base64
-import json
 
 # Function to fetch data from Google Sheets
 def fetch_data_from_google_sheet(sheet_url):
     # Define the scope
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-    # Fetch the base64 encoded credentials from the environment variable
-    encoded_credentials = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-    
-    if not encoded_credentials:
-        raise FileNotFoundError("Google application credentials not found in environment variable")
+    # Get the JSON key from the environment variable
+    json_key = os.getenv('GOOGLE_APPLICATION_CREDENTIALS_JSON')
+    if not json_key:
+        raise ValueError("Google application credentials not found in environment variable")
 
-    # Decode the base64 string
-    credentials_json = base64.b64decode(encoded_credentials).decode('utf-8')
-    credentials_dict = json.loads(credentials_json)
-
-    # Save the credentials to a temporary file
-    with open("temp_credentials.json", "w") as temp_file:
-        json.dump(credentials_dict, temp_file)
+    # Save the JSON key to a temporary file
+    with open('credentials.json', 'w') as f:
+        f.write(json_key)
 
     # Add your credentials here
-    creds = ServiceAccountCredentials.from_json_keyfile_name("temp_credentials.json", scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
 
     # Authorize the client
     client = gspread.authorize(creds)
@@ -42,9 +35,6 @@ def fetch_data_from_google_sheet(sheet_url):
         data = worksheet.get_all_values()  # Fetch all values without considering header
         df = pd.DataFrame(data[1:], columns=['timestamp', 'total_buy_quantity', 'total_sell_quantity', 'other_col1', 'other_col2'])
         worksheets_data[worksheet_name] = df
-
-    # Remove the temporary credentials file
-    os.remove("temp_credentials.json")
     
     return worksheets_data
 
