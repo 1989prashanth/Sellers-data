@@ -4,19 +4,30 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import os
 import time
+import base64
+import json
 
 # Function to fetch data from Google Sheets
 def fetch_data_from_google_sheet(sheet_url):
     # Define the scope
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-    # Specify the correct path to the JSON key file
-    file_path = r'C:\Users\user\Downloads\bank-425212-8f01cc3efacc.json'  # Adjust the path accordingly
-    if not os.path.isfile(file_path):
-        raise FileNotFoundError(f"File not found: {file_path}")
+    # Fetch the base64 encoded credentials from the environment variable
+    encoded_credentials = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    
+    if not encoded_credentials:
+        raise FileNotFoundError("Google application credentials not found in environment variable")
+
+    # Decode the base64 string
+    credentials_json = base64.b64decode(encoded_credentials).decode('utf-8')
+    credentials_dict = json.loads(credentials_json)
+
+    # Save the credentials to a temporary file
+    with open("temp_credentials.json", "w") as temp_file:
+        json.dump(credentials_dict, temp_file)
 
     # Add your credentials here
-    creds = ServiceAccountCredentials.from_json_keyfile_name(file_path, scope)
+    creds = ServiceAccountCredentials.from_json_keyfile_name("temp_credentials.json", scope)
 
     # Authorize the client
     client = gspread.authorize(creds)
@@ -31,6 +42,9 @@ def fetch_data_from_google_sheet(sheet_url):
         data = worksheet.get_all_values()  # Fetch all values without considering header
         df = pd.DataFrame(data[1:], columns=['timestamp', 'total_buy_quantity', 'total_sell_quantity', 'other_col1', 'other_col2'])
         worksheets_data[worksheet_name] = df
+
+    # Remove the temporary credentials file
+    os.remove("temp_credentials.json")
     
     return worksheets_data
 
