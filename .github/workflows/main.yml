@@ -26,8 +26,17 @@ jobs:
       - name: Create credentials file
         run: echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" | base64 --decode > $GITHUB_WORKSPACE/credentials.json
 
-      - name: Check environment variable
-        run: echo $GITHUB_WORKSPACE/credentials.json
+      - name: Test if GOOGLE_APPLICATION_CREDENTIALS is set correctly
+        run: |
+          if [ -z "${{ env.GOOGLE_APPLICATION_CREDENTIALS }}" ]; then
+            echo "GOOGLE_APPLICATION_CREDENTIALS is not set."
+            exit 1
+          elif [ ! -f "${{ env.GOOGLE_APPLICATION_CREDENTIALS }}" ]; then
+            echo "GOOGLE_APPLICATION_CREDENTIALS file does not exist at ${GITHUB_WORKSPACE}/credentials.json."
+            exit 1
+          else
+            echo "GOOGLE_APPLICATION_CREDENTIALS is set and the file exists at ${GITHUB_WORKSPACE}/credentials.json."
+          fi
         env:
           GOOGLE_APPLICATION_CREDENTIALS: $GITHUB_WORKSPACE/credentials.json
 
