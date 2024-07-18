@@ -4,7 +4,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 import os
 import time
-import base64
 import json
 
 # Function to fetch data from Google Sheets
@@ -12,7 +11,7 @@ def fetch_data_from_google_sheet(sheet_url):
     # Define the scope
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
 
-    # Fetch the base64 encoded credentials from the environment variable
+    # Fetch the credentials path from the environment variable
     credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
     
     if not credentials_path or not os.path.exists(credentials_path):
