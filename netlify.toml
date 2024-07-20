@@ -2,7 +2,7 @@
   command = "pip install -r requirements.txt && some_other_build_command_if_needed"
   publish = "your_publish_directory"
   environment = { 
-    PYTHON_VERSION = "3.8.12"
+    PYTHON_VERSION = "3.12.3"
   }
 
 [context.production.environment]
