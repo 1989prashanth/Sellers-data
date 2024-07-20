@@ -1,4 +1,4 @@
-python==3.8.12
+python==3.12.3
 altair==4.2.2
 attrs==23.2.0
 blinker==1.8.2
