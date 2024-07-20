@@ -28,10 +28,10 @@ jobs:
 
       - name: Test if GOOGLE_APPLICATION_CREDENTIALS is set correctly
         run: |
-          if [ -z "${{ env.GOOGLE_APPLICATION_CREDENTIALS }}" ]; then
+          if [ -z "${GITHUB_WORKSPACE}/credentials.json" ]; then
             echo "GOOGLE_APPLICATION_CREDENTIALS is not set."
             exit 1
-          elif [ ! -f "${{ env.GOOGLE_APPLICATION_CREDENTIALS }}" ]; then
+          elif [ ! -f "${GITHUB_WORKSPACE}/credentials.json" ]; then
             echo "GOOGLE_APPLICATION_CREDENTIALS file does not exist at ${GITHUB_WORKSPACE}/credentials.json."
             exit 1
           else
